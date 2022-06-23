@@ -3,12 +3,11 @@ import TweetInput from "./TweetInput";
 import "./TweetBox.css";
 
 export default function TweetBox(props) {
-  React.useEffect(() => {
-    console.log(props);
-  }, []);
+  // React.useEffect(() => {
+  //   console.log(props);
+  // }, []);
 
   function handleOnTweetTextChange(event) {
-    console.log("here");
     props.setTweetText(event.target.value);
   }
 
@@ -29,6 +28,8 @@ export default function TweetBox(props) {
     props.setTweetText("");
   }
 
+  var tweetLen = props.tweetText.length;
+
   return (
     <div className="tweet-box">
       <TweetInput
@@ -38,8 +39,11 @@ export default function TweetBox(props) {
 
       <div className="tweet-box-footer">
         <TweetBoxIcons />
-        <TweetCharacterCount />
-        <TweetSubmitButton handleOnSubmit={handleOnSubmit} />
+        <TweetCharacterCount tweetLen={tweetLen} />
+        <TweetSubmitButton
+          handleOnSubmit={handleOnSubmit}
+          tweetLen={tweetLen}
+        />
       </div>
     </div>
   );
@@ -57,15 +61,28 @@ export function TweetBoxIcons() {
 }
 
 export function TweetCharacterCount(props) {
-  // ADD CODE HERE
-  return <span></span>;
+  if (props.tweetLen == 0) {
+    return <span></span>;
+  } else {
+    let rem = 140 - props.tweetLen;
+    return <span>{rem}</span>;
+  }
 }
 
-export function TweetSubmitButton({ handleOnSubmit }) {
+export function TweetSubmitButton({ handleOnSubmit, tweetLen }) {
+  let isDisabled = false;
+  if (tweetLen == 0 || tweetLen > 140) {
+    isDisabled = true;
+  }
+
   return (
     <div className="tweet-submit">
       <i className="fas fa-plus-circle"></i>
-      <button className="tweet-submit-button" onClick={handleOnSubmit}>
+      <button
+        className="tweet-submit-button"
+        onClick={handleOnSubmit}
+        disabled={isDisabled}
+      >
         Tweet
       </button>
     </div>
